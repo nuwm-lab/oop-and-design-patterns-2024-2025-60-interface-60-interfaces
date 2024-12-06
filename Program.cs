@@ -49,26 +49,88 @@ class Sphere : Shape
     {
         return 4 * (float)Math.PI * radius * radius; // Площа поверхні сфери
     }
+
+    // Додатковий метод для обчислення об'єму сфери
+    public float CalculateVolume()
+    {
+        return (4f / 3f) * (float)Math.PI * (float)Math.Pow(radius, 3); // Об'єм сфери
+    }
 }
 
 class Program
 {
     static void Main()
     {
-        Shape[] shapes = new Shape[2]; // Масив покажчиків на абстрактний клас
+        // Запит користувача на вибір фігури
+        Console.WriteLine("Enter the shape type (Circle/Sphere):");
+        string shapeType = Console.ReadLine();
 
-        // Динамічне створення об'єктів
-        shapes[0] = new Circle(0, 0, 5);
-        shapes[1] = new Sphere(0, 0, 0, 5);
+        Shape shape = null;
 
-        foreach (var shape in shapes)
+        if (shapeType.ToLower() == "circle")
         {
-            // Використання поліморфізму
-            shape.DisplayInfo();
-            Console.WriteLine($"Calculated measure: {shape.CalculateMeasure()}");
-            Console.WriteLine();
+            shape = CreateCircle();
+        }
+        else if (shapeType.ToLower() == "sphere")
+        {
+            shape = CreateSphere();
+        }
+        else
+        {
+            Console.WriteLine("Invalid shape type!");
+            return;
+        }
+
+        // Використання поліморфізму
+        shape.DisplayInfo();
+        Console.WriteLine($"Calculated measure: {shape.CalculateMeasure()}");
+
+        if (shape is Sphere sphere)
+        {
+            Console.WriteLine($"Volume: {sphere.CalculateVolume()}");
         }
 
         Console.ReadKey();
+    }
+
+    // Функція для створення об'єкта Circle
+    static Circle CreateCircle()
+    {
+        Console.WriteLine("Enter the center coordinates (x, y) and radius for the circle:");
+
+        float x0 = GetFloatInput("Enter x0: ");
+        float y0 = GetFloatInput("Enter y0: ");
+        float radius = GetFloatInput("Enter radius: ");
+
+        return new Circle(x0, y0, radius);
+    }
+
+    // Функція для створення об'єкта Sphere
+    static Sphere CreateSphere()
+    {
+        Console.WriteLine("Enter the center coordinates (x, y, z) and radius for the sphere:");
+
+        float x0 = GetFloatInput("Enter x0: ");
+        float y0 = GetFloatInput("Enter y0: ");
+        float z0 = GetFloatInput("Enter z0: ");
+        float radius = GetFloatInput("Enter radius: ");
+
+        return new Sphere(x0, y0, z0, radius);
+    }
+
+    // Функція для отримання правильного числового вводу
+    static float GetFloatInput(string prompt)
+    {
+        float value;
+        while (true)
+        {
+            Console.Write(prompt);
+            if (float.TryParse(Console.ReadLine(), out value) && value > 0)
+            {
+                break;
+            }
+            Console.WriteLine("Invalid input. Please enter a positive number.");
+        }
+        return value;
     }
 }
